@@ -10,11 +10,20 @@ namespace RateLimiter
     {
         protected readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
         protected readonly IStopwatchProvider<long> stopwatchProvider;
+        internal readonly IAsyncBlocker asyncBlocker;
 
         protected RateLimiterBase(IStopwatchProvider<long> stopwatchProvider)
+            : this(stopwatchProvider, null)
+        {
+        }
+
+        internal RateLimiterBase(
+            IStopwatchProvider<long> stopwatchProvider,
+            IAsyncBlocker asyncBlocker)
         {
             Contract.Requires(stopwatchProvider != null);
             this.stopwatchProvider = stopwatchProvider;
+            this.asyncBlocker = asyncBlocker ?? TaskDelayAsyncBlocker.Instance;
         }
 
         public double PermitsPerSecond
@@ -74,7 +83,7 @@ namespace RateLimiter
         public async Task<TimeSpan> AcquireAsync(int permits, CancellationToken cancellationToken)
         {
             var waitTimeout = await ReserveAsync(permits, cancellationToken);
-            await Task.Delay(waitTimeout, cancellationToken);
+            await asyncBlocker.WaitAsync(waitTimeout, cancellationToken);
             return waitTimeout;
         }
 
@@ -138,7 +147,7 @@ namespace RateLimiter
             Contract.Requires(permits > 0);
 
             TimeSpan waitTimeout;
-            await semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync(cancellationToken);
             try
             {
                 var nowTimestamp = stopwatchProvider.GetTimestamp();
@@ -156,7 +165,7 @@ namespace RateLimiter
                 semaphoreSlim.Release();
             }
 
-            await Task.Delay(waitTimeout);
+            await asyncBlocker.WaitAsync(waitTimeout, cancellationToken);
             return true;
         }
 
@@ -173,7 +182,7 @@ namespace RateLimiter
         public async Task<TimeSpan> ReserveAsync(int permits, CancellationToken cancellationToken)
         {
             Contract.Requires(permits > 0);
-            await semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync(cancellationToken);
             try
             {
                 return ReserveAndGetWaitLength(permits, stopwatchProvider.GetTimestamp());
@@ -197,7 +206,7 @@ namespace RateLimiter
         public async Task<TimeSpan> QueryAsync(int permits, CancellationToken cancellationToken)
         {
             Contract.Requires(permits > 0);
-            await semaphoreSlim.WaitAsync();
+            await semaphoreSlim.WaitAsync(cancellationToken);
             try
             {
                 var nowTimestamp = stopwatchProvider.GetTimestamp();

@@ -5,7 +5,13 @@ namespace RateLimiter
 {
     public abstract class SmoothRateLimiter : RateLimiterBase
     {
-        protected SmoothRateLimiter(IStopwatchProvider<long> stopwatchProvider) : base(stopwatchProvider)
+        protected SmoothRateLimiter(IStopwatchProvider<long> stopwatchProvider)
+            : this(stopwatchProvider, null)
+        {
+        }
+
+        internal SmoothRateLimiter(IStopwatchProvider<long> stopwatchProvider, IAsyncBlocker asyncBlocker)
+            : base(stopwatchProvider, asyncBlocker)
         {
         }
 

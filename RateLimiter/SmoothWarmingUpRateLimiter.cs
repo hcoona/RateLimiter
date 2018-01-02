@@ -9,7 +9,16 @@ namespace RateLimiter
             IStopwatchProvider<long> stopwatchProvider,
             TimeSpan warmupPeriod,
             double coldFactor)
-            : base(stopwatchProvider)
+            : this(stopwatchProvider, warmupPeriod, coldFactor, null)
+        {
+        }
+
+        internal SmoothWarmingUpRateLimiter(
+            IStopwatchProvider<long> stopwatchProvider,
+            TimeSpan warmupPeriod,
+            double coldFactor,
+            IAsyncBlocker asyncBlocker)
+            : base(stopwatchProvider, asyncBlocker)
         {
             this.warmupPeriod = warmupPeriod;
             this.coldFactor = coldFactor;
