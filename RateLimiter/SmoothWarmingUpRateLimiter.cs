@@ -9,6 +9,7 @@ namespace RateLimiter
             IStopwatchProvider<long> stopwatchProvider,
             TimeSpan warmupPeriod,
             double coldFactor)
+#if !NET20
             : this(stopwatchProvider, warmupPeriod, coldFactor, null)
         {
         }
@@ -19,6 +20,9 @@ namespace RateLimiter
             double coldFactor,
             IAsyncBlocker asyncBlocker)
             : base(stopwatchProvider, asyncBlocker)
+#else
+            : base(stopwatchProvider)
+#endif
         {
             this.warmupPeriod = warmupPeriod;
             this.coldFactor = coldFactor;

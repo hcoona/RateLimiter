@@ -8,6 +8,7 @@ namespace RateLimiter
         public SmoothBurstyRateLimiter(
             IStopwatchProvider<long> stopwatchProvider,
             double maxBurstSeconds)
+#if !NET20
             : this(stopwatchProvider, maxBurstSeconds, null)
         {
         }
@@ -17,6 +18,9 @@ namespace RateLimiter
             double maxBurstSeconds,
             IAsyncBlocker asyncBlocker)
             : base(stopwatchProvider, asyncBlocker)
+#else
+            : base(stopwatchProvider)
+#endif
         {
             this.maxBurstSeconds = maxBurstSeconds;
         }

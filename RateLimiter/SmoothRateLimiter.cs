@@ -6,12 +6,16 @@ namespace RateLimiter
     public abstract class SmoothRateLimiter : RateLimiterBase
     {
         protected SmoothRateLimiter(IStopwatchProvider<long> stopwatchProvider)
+#if !NET20
             : this(stopwatchProvider, null)
         {
         }
 
         internal SmoothRateLimiter(IStopwatchProvider<long> stopwatchProvider, IAsyncBlocker asyncBlocker)
             : base(stopwatchProvider, asyncBlocker)
+#else
+            : base(stopwatchProvider)
+#endif
         {
         }
 
