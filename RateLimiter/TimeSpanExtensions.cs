@@ -6,12 +6,28 @@ namespace RateLimiter
     {
         public static TimeSpan Multiply(this TimeSpan timeSpan, double times)
         {
-            return TimeSpan.FromTicks((long)Math.Round(timeSpan.Ticks * times));
+            var resultMillis = timeSpan.TotalMilliseconds * times;
+            if (resultMillis < TimeSpan.MaxValue.TotalMilliseconds)
+            {
+                return TimeSpan.FromMilliseconds(resultMillis);
+            }
+            else
+            {
+                return TimeSpan.MaxValue;
+            }
         }
 
         public static TimeSpan Divide(this TimeSpan timeSpan, double divider)
         {
-            return TimeSpan.FromTicks((long)Math.Round(timeSpan.Ticks / divider));
+            var resultMillis = timeSpan.TotalMilliseconds / divider;
+            if (resultMillis > TimeSpan.MinValue.TotalMilliseconds)
+            {
+                return TimeSpan.FromMilliseconds(resultMillis);
+            }
+            else
+            {
+                return TimeSpan.MinValue;
+            }
         }
     }
 }

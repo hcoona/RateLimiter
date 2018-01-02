@@ -8,7 +8,7 @@ namespace RateLimiter
 {
     public abstract class RateLimiterBase : IRateLimiter
     {
-        protected readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1);
+        protected readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
         protected readonly IStopwatchProvider<long> stopwatchProvider;
         internal readonly IAsyncBlocker asyncBlocker;
 
@@ -42,7 +42,9 @@ namespace RateLimiter
             }
             set
             {
-                Contract.Requires(value > 0 && !Double.IsNaN(value));
+                if (!(value > 0 && !Double.IsNaN(value)))
+                    throw new ArgumentOutOfRangeException("PermitsPerSecond");
+
                 semaphoreSlim.Wait();
                 try
                 {
@@ -227,16 +229,16 @@ namespace RateLimiter
         protected TimeSpan ReserveAndGetWaitLength(int permits, long nowTimestamp)
         {
             var momentAvailable = stopwatchProvider.ParseDuration(
-                ReserveEarliestAvailable(permits, nowTimestamp),
-                nowTimestamp);
+                nowTimestamp,
+                ReserveEarliestAvailable(permits, nowTimestamp));
             return momentAvailable.Ticks > 0 ? momentAvailable : TimeSpan.Zero;
         }
 
         protected bool CanAcquire(long nowTimestamp, TimeSpan timeout)
         {
             var momentAvailable = stopwatchProvider.ParseDuration(
-                QueryEarliestAvailable(nowTimestamp),
-                nowTimestamp);
+                nowTimestamp,
+                QueryEarliestAvailable(nowTimestamp));
             return momentAvailable <= timeout;
         }
 

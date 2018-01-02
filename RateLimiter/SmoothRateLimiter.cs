@@ -28,7 +28,10 @@ namespace RateLimiter
         protected sealed override void DoSetRate(double permitsPerSecond, long nowTimestamp)
         {
             Resync(nowTimestamp);
-            var stableInterval = TimeSpan.FromSeconds(1 / permitsPerSecond);
+            var stableIntervalSeconds = 1 / permitsPerSecond;
+            var stableInterval = stableIntervalSeconds < TimeSpan.MaxValue.TotalSeconds
+                ? TimeSpan.FromSeconds(1 / permitsPerSecond)
+                : TimeSpan.MaxValue;
             this.stableInterval = stableInterval;
             DoSetRate(permitsPerSecond, stableInterval);
         }
@@ -60,7 +63,7 @@ namespace RateLimiter
 
         private TimeSpan FreshPermitsToWaitTime(double permits)
         {
-            return TimeSpan.FromTicks((long)Math.Round(stableInterval.Ticks * permits));
+            return stableInterval.Multiply(permits);
         }
 
         protected void Resync(long nowTimestamp)
