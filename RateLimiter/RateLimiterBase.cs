@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 using Clocks;
@@ -21,8 +20,7 @@ namespace RateLimiter
             IStopwatchProvider<long> stopwatchProvider,
             IAsyncBlocker asyncBlocker)
         {
-            Contract.Requires(stopwatchProvider != null);
-            this.stopwatchProvider = stopwatchProvider;
+            this.stopwatchProvider = stopwatchProvider ?? throw new ArgumentNullException(nameof(stopwatchProvider));
             this.asyncBlocker = asyncBlocker ?? TaskDelayAsyncBlocker.Instance;
         }
 
@@ -43,7 +41,7 @@ namespace RateLimiter
             set
             {
                 if (!(value > 0 && !Double.IsNaN(value)))
-                    throw new ArgumentOutOfRangeException("PermitsPerSecond");
+                    throw new ArgumentOutOfRangeException(nameof(PermitsPerSecond));
 
                 semaphoreSlim.Wait();
                 try
@@ -146,7 +144,7 @@ namespace RateLimiter
 
         public async Task<bool> TryAcquireAsync(int permits, TimeSpan timeout, CancellationToken cancellationToken)
         {
-            Contract.Requires(permits > 0);
+            if (!(permits > 0)) throw new ArgumentOutOfRangeException(nameof(permits));
 
             TimeSpan waitTimeout;
             await semaphoreSlim.WaitAsync(cancellationToken);
@@ -183,7 +181,8 @@ namespace RateLimiter
 
         public async Task<TimeSpan> ReserveAsync(int permits, CancellationToken cancellationToken)
         {
-            Contract.Requires(permits > 0);
+            if (!(permits > 0)) throw new ArgumentOutOfRangeException(nameof(permits));
+
             await semaphoreSlim.WaitAsync(cancellationToken);
             try
             {
@@ -207,7 +206,8 @@ namespace RateLimiter
 
         public async Task<TimeSpan> QueryAsync(int permits, CancellationToken cancellationToken)
         {
-            Contract.Requires(permits > 0);
+            if (!(permits > 0)) throw new ArgumentOutOfRangeException(nameof(permits));
+
             await semaphoreSlim.WaitAsync(cancellationToken);
             try
             {

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Clocks.Abstraction" Version="1.1.0" />
-    <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
