@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project>
+
+  <PropertyGroup>
+    <Authors>Shuai Zhang</Authors>
+    <Company>Shuai Zhang</Company>
+    <Copyright>Copyright 2017 Shuai Zhang under GPLv3</Copyright>
+    <Description>This is a C# port of modified version of Guava RateLimiter. See project site for further details.</Description>
+    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0-standalone.html</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/hcoona/RateLimiter</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hcoona/RateLimiter</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>rate-limit</PackageTags>
+    <PackageReleaseNotes>$(Description)</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.7" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

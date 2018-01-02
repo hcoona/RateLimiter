@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "semVer1NumericIdentifierPadding": 4,
+  "nugetPackageVersion": {
+    "semVer": 1
+  },
+  "publicReleaseRefSpec": [
+    "^refs/heads/master$",
+    "^refs/tags/v\\d+\\.\\d+\\.\\d+"
+  ],
+  "cloudBuild": {
+    "setVersionVariables": true,
+    "buildNumber": {
+      "enabled": false,
+      "includeCommitId": {
+        "when": "nonPublicReleaseOnly",
+        "where": "buildMetadata"
+      }
+    }
+  },
+  "inherit": false
+}

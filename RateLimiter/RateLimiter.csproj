@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../common.props" />
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Clocks.Abstraction" Version="1.0.0" />
+    <PackageReference Include="System.Diagnostics.Contracts" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
