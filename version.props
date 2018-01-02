@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/hcoona/RateLimiter</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hcoona/RateLimiter</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>rate-limit</PackageTags>
+    <PackageTags>rate-limit guava</PackageTags>
     <PackageReleaseNotes>$(Description)</PackageReleaseNotes>
   </PropertyGroup>
 

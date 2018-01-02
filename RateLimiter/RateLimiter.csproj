@@ -6,6 +6,10 @@
     <TargetFrameworks>net45;netstandard1.3</TargetFrameworks>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>RateLimiter2</PackageId>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Clocks.Abstraction" Version="1.1.0" />
   </ItemGroup>
