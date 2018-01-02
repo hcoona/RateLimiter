@@ -3,7 +3,7 @@ using Clocks;
 
 namespace RateLimiter
 {
-    public sealed class SmoothBurstyRateLimiter : SmoothRateLimiter
+    internal sealed class SmoothBurstyRateLimiter : SmoothRateLimiter
     {
         public SmoothBurstyRateLimiter(
             IStopwatchProvider<long> stopwatchProvider,

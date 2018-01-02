@@ -3,7 +3,7 @@ using Clocks;
 
 namespace RateLimiter
 {
-    public sealed class SmoothWarmingUpRateLimiter : SmoothRateLimiter
+    internal sealed class SmoothWarmingUpRateLimiter : SmoothRateLimiter
     {
         public SmoothWarmingUpRateLimiter(
             IStopwatchProvider<long> stopwatchProvider,
