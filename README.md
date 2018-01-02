@@ -44,6 +44,8 @@ but it is the next request that will experience extra throttling, thus paying fo
 
 Add documents.
 
+Make TryAcquire also return the estimated available moment so we didn't need `Query` method anymore.
+
 ## Acknowledgement ##
 
 [Guava](https://github.com/google/guava) is licensed in Apache License 2.0 which is compatible with version 3 of the GPL according to [this](https://apache.org/licenses/GPL-compatibility.html).
