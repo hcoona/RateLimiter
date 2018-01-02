@@ -14,8 +14,4 @@
     <PackageReference Include="Clocks.Abstraction" Version="1.1.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
-    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
-  </ItemGroup>
-
 </Project>
