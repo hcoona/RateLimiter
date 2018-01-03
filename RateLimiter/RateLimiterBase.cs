@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 #if !NET20
 using System.Threading.Tasks;
@@ -81,29 +82,36 @@ namespace RateLimiter
             }
         }
 
+        [DebuggerStepThrough]
         public TimeSpan Acquire()
         {
             return Acquire(1);
         }
 
 #if !NET20
+        [DebuggerStepThrough]
         public Task<TimeSpan> AcquireAsync()
         {
             return AcquireAsync(CancellationToken.None);
         }
 
+        [DebuggerStepThrough]
         public Task<TimeSpan> AcquireAsync(CancellationToken cancellationToken)
         {
             return AcquireAsync(1, cancellationToken);
         }
 #endif
 
+#if !NET20
+        [DebuggerStepThrough]
+#endif
         public TimeSpan Acquire(int permits)
 #if !NET20
         {
             return AcquireAsync(permits).GetAwaiter().GetResult();
         }
 
+        [DebuggerStepThrough]
         public Task<TimeSpan> AcquireAsync(int permits)
         {
             return AcquireAsync(permits, CancellationToken.None);
@@ -123,63 +131,76 @@ namespace RateLimiter
         }
 #endif
 
+        [DebuggerStepThrough]
         public TryAcquireResult TryAcquire()
         {
             return TryAcquire(1, TimeSpan.Zero);
         }
 
 #if !NET20
+        [DebuggerStepThrough]
         public Task<TryAcquireResult> TryAcquireAsync()
         {
             return TryAcquireAsync(CancellationToken.None);
         }
 
+        [DebuggerStepThrough]
         public Task<TryAcquireResult> TryAcquireAsync(CancellationToken cancellationToken)
         {
             return TryAcquireAsync(1, TimeSpan.Zero, cancellationToken);
         }
 #endif
 
+        [DebuggerStepThrough]
         public TryAcquireResult TryAcquire(int permits)
         {
             return TryAcquire(permits, TimeSpan.Zero);
         }
 
 #if !NET20
+        [DebuggerStepThrough]
         public Task<TryAcquireResult> TryAcquireAsync(int permits)
         {
             return TryAcquireAsync(permits, CancellationToken.None);
         }
 
+        [DebuggerStepThrough]
         public Task<TryAcquireResult> TryAcquireAsync(int permits, CancellationToken cancellationToken)
         {
             return TryAcquireAsync(permits, TimeSpan.Zero, cancellationToken);
         }
 #endif
 
+        [DebuggerStepThrough]
         public TryAcquireResult TryAcquire(TimeSpan timeout)
         {
             return TryAcquire(1, timeout);
         }
 
 #if !NET20
+        [DebuggerStepThrough]
         public Task<TryAcquireResult> TryAcquireAsync(TimeSpan timeout)
         {
             return TryAcquireAsync(timeout, CancellationToken.None);
         }
 
+        [DebuggerStepThrough]
         public Task<TryAcquireResult> TryAcquireAsync(TimeSpan timeout, CancellationToken cancellationToken)
         {
             return TryAcquireAsync(1, timeout, cancellationToken);
         }
 #endif
 
+#if !NET20
+        [DebuggerStepThrough]
+#endif
         public TryAcquireResult TryAcquire(int permits, TimeSpan timeout)
 #if !NET20
         {
             return TryAcquireAsync(permits, timeout, CancellationToken.None).GetAwaiter().GetResult();
         }
 
+        [DebuggerStepThrough]
         public Task<TryAcquireResult> TryAcquireAsync(int permits, TimeSpan timeout)
         {
             return TryAcquireAsync(permits, timeout, CancellationToken.None);
@@ -233,12 +254,16 @@ namespace RateLimiter
             };
         }
 
+#if !NET20
+        [DebuggerStepThrough]
+#endif
         public TimeSpan Reserve(int permits)
 #if !NET20
         {
             return ReserveAsync(permits).GetAwaiter().GetResult();
         }
 
+        [DebuggerStepThrough]
         public Task<TimeSpan> ReserveAsync(int permits)
         {
             return ReserveAsync(permits, CancellationToken.None);
