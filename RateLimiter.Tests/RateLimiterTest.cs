@@ -47,18 +47,18 @@ namespace RateLimiter.Tests
         public void TestImmediateTryAcquire()
         {
             var limiter = Create(1);
-            Assert.True(limiter.TryAcquire(), "Unable to acquire initial permit");
-            Assert.False(limiter.TryAcquire(), "Capable of acquiring secondary permit");
+            Assert.True(limiter.TryAcquire().Succeed, "Unable to acquire initial permit");
+            Assert.False(limiter.TryAcquire().Succeed, "Capable of acquiring secondary permit");
         }
 
         [Fact]
         public void TestDoubleMinValueCanAcquireExactlyOnce()
         {
             var r = Create(double.Epsilon);
-            Assert.True(r.TryAcquire(), "Unable to acquire initial permit");
-            Assert.False(r.TryAcquire(), "Capable of acquiring an additional permit");
+            Assert.True(r.TryAcquire().Succeed, "Unable to acquire initial permit");
+            Assert.False(r.TryAcquire().Succeed, "Capable of acquiring an additional permit");
             stopwatchProviderAndBlocker.WaitAsync(TimeSpan.MaxValue.Subtract(TimeSpan.FromTicks(1)), CancellationToken.None).GetAwaiter().GetResult();
-            Assert.False(r.TryAcquire(), "Capable of acquiring an additional permit after sleeping");
+            Assert.False(r.TryAcquire().Succeed, "Capable of acquiring an additional permit after sleeping");
         }
 
         [Fact]

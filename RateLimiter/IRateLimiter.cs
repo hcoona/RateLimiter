@@ -24,36 +24,36 @@ namespace RateLimiter
         Task<TimeSpan> AcquireAsync(int permits, CancellationToken cancellationToken);
 #endif
 
-        bool TryAcquire();
+        TryAcquireResult TryAcquire();
 
 #if !NET20
-        Task<bool> TryAcquireAsync();
+        Task<TryAcquireResult> TryAcquireAsync();
 
-        Task<bool> TryAcquireAsync(CancellationToken cancellationToken);
+        Task<TryAcquireResult> TryAcquireAsync(CancellationToken cancellationToken);
 #endif
 
-        bool TryAcquire(int permits);
+        TryAcquireResult TryAcquire(int permits);
 
 #if !NET20
-        Task<bool> TryAcquireAsync(int permits);
+        Task<TryAcquireResult> TryAcquireAsync(int permits);
 
-        Task<bool> TryAcquireAsync(int permits, CancellationToken cancellationToken);
+        Task<TryAcquireResult> TryAcquireAsync(int permits, CancellationToken cancellationToken);
 #endif
 
-        bool TryAcquire(TimeSpan timeout);
+        TryAcquireResult TryAcquire(TimeSpan timeout);
 
 #if !NET20
-        Task<bool> TryAcquireAsync(TimeSpan timeout);
+        Task<TryAcquireResult> TryAcquireAsync(TimeSpan timeout);
 
-        Task<bool> TryAcquireAsync(TimeSpan timeout, CancellationToken cancellationToken);
+        Task<TryAcquireResult> TryAcquireAsync(TimeSpan timeout, CancellationToken cancellationToken);
 #endif
 
-        bool TryAcquire(int permits, TimeSpan timeout);
+        TryAcquireResult TryAcquire(int permits, TimeSpan timeout);
 
 #if !NET20
-        Task<bool> TryAcquireAsync(int permits, TimeSpan timeout);
+        Task<TryAcquireResult> TryAcquireAsync(int permits, TimeSpan timeout);
 
-        Task<bool> TryAcquireAsync(int permits, TimeSpan timeout, CancellationToken cancellationToken);
+        Task<TryAcquireResult> TryAcquireAsync(int permits, TimeSpan timeout, CancellationToken cancellationToken);
 #endif
 
         TimeSpan Reserve(int permits);
@@ -62,14 +62,6 @@ namespace RateLimiter
         Task<TimeSpan> ReserveAsync(int permits);
 
         Task<TimeSpan> ReserveAsync(int permits, CancellationToken cancellationToken);
-#endif
-
-        TimeSpan Query(int permits);
-
-#if !NET20
-        Task<TimeSpan> QueryAsync(int permits);
-
-        Task<TimeSpan> QueryAsync(int permits, CancellationToken cancellationToken);
 #endif
     }
 }

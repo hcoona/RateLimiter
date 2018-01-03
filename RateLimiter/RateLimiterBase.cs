@@ -103,7 +103,7 @@ namespace RateLimiter
         {
             return AcquireAsync(permits).GetAwaiter().GetResult();
         }
-            
+
         public Task<TimeSpan> AcquireAsync(int permits)
         {
             return AcquireAsync(permits, CancellationToken.None);
@@ -123,69 +123,69 @@ namespace RateLimiter
         }
 #endif
 
-        public bool TryAcquire()
+        public TryAcquireResult TryAcquire()
         {
             return TryAcquire(1, TimeSpan.Zero);
         }
 
 #if !NET20
-        public Task<bool> TryAcquireAsync()
+        public Task<TryAcquireResult> TryAcquireAsync()
         {
             return TryAcquireAsync(CancellationToken.None);
         }
 
-        public Task<bool> TryAcquireAsync(CancellationToken cancellationToken)
+        public Task<TryAcquireResult> TryAcquireAsync(CancellationToken cancellationToken)
         {
             return TryAcquireAsync(1, TimeSpan.Zero, cancellationToken);
         }
 #endif
 
-        public bool TryAcquire(int permits)
+        public TryAcquireResult TryAcquire(int permits)
         {
             return TryAcquire(permits, TimeSpan.Zero);
         }
 
 #if !NET20
-        public Task<bool> TryAcquireAsync(int permits)
+        public Task<TryAcquireResult> TryAcquireAsync(int permits)
         {
             return TryAcquireAsync(permits, CancellationToken.None);
         }
 
-        public Task<bool> TryAcquireAsync(int permits, CancellationToken cancellationToken)
+        public Task<TryAcquireResult> TryAcquireAsync(int permits, CancellationToken cancellationToken)
         {
             return TryAcquireAsync(permits, TimeSpan.Zero, cancellationToken);
         }
 #endif
 
-        public bool TryAcquire(TimeSpan timeout)
+        public TryAcquireResult TryAcquire(TimeSpan timeout)
         {
             return TryAcquire(1, timeout);
         }
 
 #if !NET20
-        public Task<bool> TryAcquireAsync(TimeSpan timeout)
+        public Task<TryAcquireResult> TryAcquireAsync(TimeSpan timeout)
         {
             return TryAcquireAsync(timeout, CancellationToken.None);
         }
 
-        public Task<bool> TryAcquireAsync(TimeSpan timeout, CancellationToken cancellationToken)
+        public Task<TryAcquireResult> TryAcquireAsync(TimeSpan timeout, CancellationToken cancellationToken)
         {
             return TryAcquireAsync(1, timeout, cancellationToken);
         }
 #endif
 
-        public bool TryAcquire(int permits, TimeSpan timeout)
+        public TryAcquireResult TryAcquire(int permits, TimeSpan timeout)
 #if !NET20
         {
             return TryAcquireAsync(permits, timeout, CancellationToken.None).GetAwaiter().GetResult();
         }
 
-        public Task<bool> TryAcquireAsync(int permits, TimeSpan timeout)
+        public Task<TryAcquireResult> TryAcquireAsync(int permits, TimeSpan timeout)
         {
             return TryAcquireAsync(permits, timeout, CancellationToken.None);
         }
 
-        public async Task<bool> TryAcquireAsync(int permits, TimeSpan timeout, CancellationToken cancellationToken)
+        public async Task<TryAcquireResult> TryAcquireAsync(int permits, TimeSpan timeout, CancellationToken cancellationToken)
 #endif
         {
             if (!(permits > 0)) throw new ArgumentOutOfRangeException(nameof(permits));
@@ -199,9 +199,13 @@ namespace RateLimiter
             try
             {
                 var nowTimestamp = stopwatchProvider.GetTimestamp();
-                if (!CanAcquire(nowTimestamp, timeout))
+                if (!CanAcquire(nowTimestamp, timeout, out var momentAvailableInterval))
                 {
-                    return false;
+                    return new TryAcquireResult
+                    {
+                        Succeed = false,
+                        MomentAvailableInterval = momentAvailableInterval
+                    };
                 }
                 else
                 {
@@ -222,7 +226,11 @@ namespace RateLimiter
 #else
             await asyncBlocker.WaitAsync(waitTimeout, cancellationToken);
 #endif
-            return true;
+            return new TryAcquireResult
+            {
+                Succeed = true,
+                MomentAvailableInterval = TimeSpan.Zero
+            };
         }
 
         public TimeSpan Reserve(int permits)
@@ -260,44 +268,6 @@ namespace RateLimiter
             }
         }
 
-        public TimeSpan Query(int permits)
-#if !NET20
-        {
-            return QueryAsync(permits).GetAwaiter().GetResult();
-        }
-
-        public Task<TimeSpan> QueryAsync(int permits)
-        {
-            return QueryAsync(permits, CancellationToken.None);
-        }
-
-        public async Task<TimeSpan> QueryAsync(int permits, CancellationToken cancellationToken)
-#endif
-        {
-            if (!(permits > 0)) throw new ArgumentOutOfRangeException(nameof(permits));
-
-#if NET20
-            Monitor.Enter(lockObject);
-#else
-            await semaphoreSlim.WaitAsync(cancellationToken);
-#endif
-            try
-            {
-                var nowTimestamp = stopwatchProvider.GetTimestamp();
-                return stopwatchProvider.ParseDuration(
-                    QueryEarliestAvailable(nowTimestamp),
-                    nowTimestamp);
-            }
-            finally
-            {
-#if NET20
-                Monitor.Exit(lockObject);
-#else
-                semaphoreSlim.Release();
-#endif
-            }
-        }
-
         protected abstract double DoGetRate();
 
         protected abstract void DoSetRate(double permitsPerSecond, long nowTimestamp);
@@ -310,12 +280,12 @@ namespace RateLimiter
             return momentAvailable.Ticks > 0 ? momentAvailable : TimeSpan.Zero;
         }
 
-        protected bool CanAcquire(long nowTimestamp, TimeSpan timeout)
+        protected bool CanAcquire(long nowTimestamp, TimeSpan timeout, out TimeSpan momentAvailableInterval)
         {
-            var momentAvailable = stopwatchProvider.ParseDuration(
+            momentAvailableInterval = stopwatchProvider.ParseDuration(
                 nowTimestamp,
                 QueryEarliestAvailable(nowTimestamp));
-            return momentAvailable <= timeout;
+            return momentAvailableInterval <= timeout;
         }
 
         protected abstract long QueryEarliestAvailable(long nowTimestamp);
