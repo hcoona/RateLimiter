@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fhcoona%2FRateLimiter.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fhcoona%2FRateLimiter?ref=badge_shield)
+
 # RateLimiter #
 
 This is a C# port of modified version of [Guava RateLimiter](https://github.com/google/guava/blob/master/guava/src/com/google/common/util/concurrent/SmoothRateLimiter.java).
@@ -47,3 +49,7 @@ Add documents.
 ## Acknowledgement ##
 
 [Guava](https://github.com/google/guava) is licensed in Apache License 2.0 which is compatible with version 3 of the GPL according to [this](https://apache.org/licenses/GPL-compatibility.html).
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fhcoona%2FRateLimiter.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fhcoona%2FRateLimiter?ref=badge_large)
