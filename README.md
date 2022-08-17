@@ -4,6 +4,8 @@ This is a C# port of modified version of [Guava RateLimiter](https://github.com/
 
 See the comments in Guava source code for further details.
 
+**Moved to https://github.com/hcoona/OneDotNet/tree/3116169/RateLimiter**
+
 ## Getting Started ##
 
 A rate limiter. Conceptually, a rate limiter distributes permits at a configurable rate.
